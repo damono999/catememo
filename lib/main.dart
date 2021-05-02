@@ -1,5 +1,5 @@
 import 'package:catememo/screen/auth_screen.dart';
-import 'package:catememo/screen/create_memo_screen.dart';
+import 'package:catememo/screen/memos_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             return CircularProgressIndicator();
           }
           if (snapshot.hasData) {
-            return CreateMemoScreen(snapshot.data);
+            return MemosScreen(snapshot.data);
           }
           return LoginPage();
         },
