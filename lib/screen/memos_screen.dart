@@ -1,16 +1,17 @@
+import 'package:catememo/screen/login_screen.dart';
 import 'package:catememo/widgets/Accordion.dart';
+import 'package:catememo/widgets/AppBottomNavigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 // ignore: must_be_immutable
 class MemosScreen extends StatelessWidget {
-  User user;
-  MemosScreen(this.user);
   static final googleLogin = GoogleSignIn(scopes: [
     'email',
     'https://www.googleapis.com/auth/contacts.readonly',
   ]);
+  static final String routeName = "memos";
   List<Item> _data = generateItems(8);
 
   @override
@@ -24,6 +25,8 @@ class MemosScreen extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.routeName);
               },
               child: Text(
                 "ログアウト",
@@ -48,6 +51,7 @@ class MemosScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: AppBottomNavigationBar(0),
     );
   }
 }
