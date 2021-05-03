@@ -1,6 +1,8 @@
 import 'package:catememo/enums/category_enum.dart';
 import 'package:catememo/providers/auth_provider.dart';
-import 'package:catememo/widgets/AppBottomNavigation.dart';
+import 'package:catememo/screens/login_screen.dart';
+import 'package:catememo/widgets/appBottomNavigation.dart';
+import 'package:catememo/widgets/textfileds.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,27 +10,26 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-import 'login_screen.dart';
-
-// ignore: must_be_immutable
 class CreateMemoScreen extends StatefulWidget {
   static final String routeName = "create-memo";
-  static final googleLogin = GoogleSignIn(scopes: [
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ]);
 
   @override
   _CreateMemoScreenState createState() => _CreateMemoScreenState();
 }
 
 class _CreateMemoScreenState extends State<CreateMemoScreen> {
-  TextEditingController _textController;
-  String _enteredMessage = "";
+  TextEditingController _memoController;
+  TextEditingController _titleController;
+  String _memo = "";
+  String _title = "";
   int _selectedCategoryId;
   var _isPreview = false;
   var _isSending = false;
   var _isFirstCall = true;
+  final googleLogin = GoogleSignIn(scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ]);
 
   @override
   void didChangeDependencies() {
@@ -36,15 +37,15 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
 
     if (_isFirstCall) {
       setState(() {
-        // _enteredMessage = initText;
-        _textController = new TextEditingController(text: _enteredMessage);
+        // _memo = initText;
+        _memoController = new TextEditingController(text: _memo);
+        _titleController = new TextEditingController(text: _title);
         _isFirstCall = false;
       });
     }
   }
 
   void _sendMessage(BuildContext ctx) async {
-    print(_enteredMessage);
     setState(() {
       _isSending = true;
     });
@@ -52,7 +53,8 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
       await FirebaseFirestore.instance.collection('memos').doc().set({
         'uid': ctx.read<AuthProvider>().getUser.uid,
         'categoryId': _selectedCategoryId,
-        'text': _enteredMessage,
+        'memo': _memo,
+        'title': _title,
         'createdAt': DateTime.now(),
       });
 
@@ -75,6 +77,10 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
     });
   }
 
+  bool _checkSending() {
+    return _isSending || _memo.trim().isEmpty || _title.trim().isEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,8 +90,9 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
                 FirebaseAuth.instance.signOut();
+                await googleLogin.signOut();
                 Navigator.of(context)
                     .pushReplacementNamed(LoginScreen.routeName);
               },
@@ -97,143 +104,141 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
           ),
         ],
       ),
-      body: Builder(builder: (ctx) {
-        return SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    color: _isSending || _enteredMessage.trim().isEmpty
-                        ? Colors.grey
-                        : Theme.of(context).primaryColor,
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      if (_enteredMessage.trim().isEmpty && _isSending) return;
-                      _sendMessage(ctx);
-                    },
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: DropdownButton<int>(
-                        // value: _selectedCategoryId,
-                        dropdownColor: Colors.grey[50],
-                        underline: Container(),
-                        onChanged: (int value) {
-                          setState(() {
-                            // _selectedCategoryId = value;
-                          });
-                        },
-                        selectedItemBuilder: (context) {
-                          return CategoryEnumList.getEnum
-                              .map((CategoryEnum caterogy) {
-                            return Row(
-                              children: <Widget>[
-                                CircleAvatar(
-                                  backgroundColor: caterogy.color,
-                                  child: Icon(
-                                    caterogy.icon,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                  maxRadius: 16,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                DefaultTextStyle(
-                                  style: TextStyle(color: Colors.black),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  child: Text(
-                                    caterogy.name,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w100,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList();
-                        },
-                        items: CategoryEnumList.getEnum
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(
+                  color: _checkSending()
+                      ? Colors.grey
+                      : Theme.of(context).primaryColor,
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    if (_checkSending()) return;
+                    _sendMessage(context);
+                  },
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: DropdownButton<int>(
+                      value: _selectedCategoryId,
+                      dropdownColor: Colors.grey[50],
+                      underline: Container(),
+                      onChanged: (int value) {
+                        setState(() {
+                          _selectedCategoryId = value;
+                        });
+                      },
+                      selectedItemBuilder: (context) {
+                        return CategoryEnumList.getEnum
                             .map((CategoryEnum caterogy) {
-                          return DropdownMenuItem(
-                            value: caterogy.id,
-                            child: Text(
-                              caterogy.name,
-                              style: caterogy.id == _selectedCategoryId
-                                  ? TextStyle(fontWeight: FontWeight.bold)
-                                  : TextStyle(fontWeight: FontWeight.normal),
-                            ),
+                          return Row(
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundColor: caterogy.color,
+                                child: Icon(
+                                  caterogy.icon,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                maxRadius: 16,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              DefaultTextStyle(
+                                style: TextStyle(color: Colors.black),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                                child: Text(
+                                  caterogy.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w100,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
-                        }).toList(),
-                      ),
+                        }).toList();
+                      },
+                      items:
+                          CategoryEnumList.getEnum.map((CategoryEnum caterogy) {
+                        return DropdownMenuItem(
+                          value: caterogy.id,
+                          child: Text(
+                            caterogy.name,
+                            style: caterogy.id == _selectedCategoryId
+                                ? TextStyle(fontWeight: FontWeight.bold)
+                                : TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
-                  Switch(
-                    activeColor: Theme.of(context).primaryColor,
-                    value: _isPreview,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _isPreview = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              _isPreview
-                  ? Container(
-                      padding: EdgeInsets.all(16),
-                      width: MediaQuery.of(context).size.width,
-                      child: MarkdownBody(
-                        data: _enteredMessage,
-                      ),
-                    )
-                  : Container(
-                      margin: EdgeInsets.only(top: 8),
-                      padding: EdgeInsets.all(8),
-                      child: _getTextField(),
+                ),
+                Switch(
+                  activeColor: Theme.of(context).primaryColor,
+                  value: _isPreview,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isPreview = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            _isPreview
+                ? Container(
+                    padding: EdgeInsets.all(16),
+                    width: MediaQuery.of(context).size.width,
+                    child: MarkdownBody(
+                      data: "# " + _title,
                     ),
-            ],
-          ),
-        );
-      }),
-      bottomNavigationBar: AppBottomNavigationBar(1),
-    );
-  }
-
-  Widget _getTextField() {
-    return TextField(
-      maxLines: null,
-      controller: _textController,
-      keyboardType: TextInputType.multiline,
-      onChanged: (value) {
-        setState(() {
-          _enteredMessage = value;
-        });
-      },
-      cursorRadius: Radius.circular(10),
-      style: TextStyle(fontSize: 16),
-      decoration: InputDecoration(
-        hintText: 'メモを入力しましょう',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey,
-            width: 1.0,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey,
-            width: 1.0,
-          ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: getTextField(
+                      _titleController,
+                      (value) {
+                        print(value);
+                        setState(() {
+                          _title = value;
+                        });
+                      },
+                      maxLines: 1,
+                      hintText: "タイトル",
+                    ),
+                  ),
+            _isPreview
+                ? Container(
+                    padding: EdgeInsets.all(16),
+                    width: MediaQuery.of(context).size.width,
+                    child: MarkdownBody(
+                      data: _memo,
+                    ),
+                  )
+                : Container(
+                    padding: EdgeInsets.all(8),
+                    child: getTextField(
+                      _memoController,
+                      (value) {
+                        print(value);
+                        setState(() {
+                          _memo = value;
+                        });
+                      },
+                      maxLines: null,
+                      hintText: "メモ",
+                    ),
+                  ),
+          ],
         ),
       ),
-      textAlignVertical: TextAlignVertical.center,
+      bottomNavigationBar: AppBottomNavigationBar(1),
     );
   }
 }

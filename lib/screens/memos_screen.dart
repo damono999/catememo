@@ -1,9 +1,9 @@
-import 'package:catememo/screens/login_screen.dart';
-import 'package:catememo/widgets/Accordion.dart';
-import 'package:catememo/widgets/AppBottomNavigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:catememo/widgets/accordion.dart';
+import 'package:catememo/screens/login_screen.dart';
+import 'package:catememo/widgets/appBottomNavigation.dart';
 
 // ignore: must_be_immutable
 class MemosScreen extends StatelessWidget {
@@ -23,8 +23,10 @@ class MemosScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
                 FirebaseAuth.instance.signOut();
+                await googleLogin.signOut();
+
                 Navigator.of(context)
                     .pushReplacementNamed(LoginScreen.routeName);
               },
