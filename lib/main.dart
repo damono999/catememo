@@ -1,4 +1,5 @@
 import 'package:catememo/providers/auth_provider.dart';
+import 'package:catememo/providers/memo_provider.dart';
 import 'package:catememo/screens/login_screen.dart';
 import 'package:catememo/screens/create_memo_screen.dart';
 import 'package:catememo/screens/memos_screen.dart';
@@ -15,30 +16,36 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => MemoProvider(),
+        ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'catememo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (ctx, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            if (snapshot.hasData) {
-              ctx.read<AuthProvider>().setUser(snapshot.data);
-              return MemosScreen();
-            }
-            return LoginScreen();
-          },
+        home: Builder(
+          builder: (context) => StreamBuilder<User>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (ctx, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              if (snapshot.hasData) {
+                context.read<AuthProvider>().setUser(snapshot.data);
+                return MemosScreen();
+              }
+              return LoginScreen();
+            },
+          ),
         ),
         routes: {
           LoginScreen.routeName: (ctx) => LoginScreen(),

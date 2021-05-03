@@ -1,9 +1,13 @@
+import 'package:catememo/providers/memo_provider.dart';
+import 'package:catememo/widgets/Indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:catememo/widgets/accordion.dart';
 import 'package:catememo/screens/login_screen.dart';
 import 'package:catememo/widgets/appBottomNavigation.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class MemosScreen extends StatelessWidget {
@@ -12,7 +16,6 @@ class MemosScreen extends StatelessWidget {
     'https://www.googleapis.com/auth/contacts.readonly',
   ]);
   static final String routeName = "memos";
-  List<Item> _data = generateItems(8);
 
   @override
   Widget build(BuildContext context) {
@@ -38,21 +41,34 @@ class MemosScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ..._data
-                .map((e) => Accordion(
-                      headerText:
-                          "アコーディオンアコーディオンアコーディオンアコーディオンアコーディオンアコーディオンアコーディオン",
-                      body: "To delete this panel, tap the trash can icon",
+      body: FutureBuilder<QuerySnapshot>(
+          future: context.read<MemoProvider>().fetchMemo(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Indicator();
+            }
+
+            if (snapshot.hasData) {
+              final count = snapshot.data.docs.length;
+              if (count > 0) {
+                return ListView.builder(
+                  itemCount: count,
+                  itemBuilder: (context, index) {
+                    final data = snapshot.data.docs[index].data();
+                    return Accordion(
+                      title: data["title"],
+                      memo: data["memo"],
                       icon: Icons.ac_unit,
                       iconColor: Colors.white,
-                    ))
-                .toList(),
-          ],
-        ),
-      ),
+                    );
+                  },
+                );
+              }
+            }
+            return Center(
+              child: Text("メモがありません。"),
+            );
+          }),
       bottomNavigationBar: AppBottomNavigationBar(0),
     );
   }

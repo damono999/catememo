@@ -22,10 +22,10 @@ class AppBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.edit),
           label: '作成',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.insert_chart),
-          label: 'チャート',
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.insert_chart),
+        //   label: 'チャート',
+        // ),
       ],
       onTap: (int index) {
         if (index == currentIndex) return;
