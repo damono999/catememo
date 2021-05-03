@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class Accordion extends StatefulWidget {
-  final String headerText;
+  final String title;
   final IconData icon;
   final Color iconColor;
-  final String body;
+  final String memo;
   final Function fn;
   final Function removeFn;
 
   Accordion({
-    this.headerText,
+    this.title,
     this.icon,
     this.iconColor,
-    this.body,
+    this.memo,
     this.fn,
     this.removeFn,
   });
@@ -56,7 +57,7 @@ class _AccordionState extends State<Accordion> {
                 title: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    widget.headerText,
+                    widget.title,
                     style: TextStyle(
                       fontSize: 15,
                     ),
@@ -69,7 +70,9 @@ class _AccordionState extends State<Accordion> {
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
-                subtitle: Text(widget.body),
+                subtitle: MarkdownBody(
+                  data: widget.memo,
+                ),
                 trailing: Icon(Icons.delete),
                 onTap: () {},
               ),
