@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:catememo/screen/create_memo_screen.dart';
-import 'package:catememo/screen/memos_screen.dart';
+import 'package:catememo/screens/create_memo_screen.dart';
+import 'package:catememo/screens/memos_screen.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
