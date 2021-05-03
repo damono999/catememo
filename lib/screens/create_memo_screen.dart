@@ -1,9 +1,12 @@
 import 'package:catememo/enums/category_enum.dart';
+import 'package:catememo/providers/auth_provider.dart';
 import 'package:catememo/widgets/AppBottomNavigation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 import 'login_screen.dart';
 
@@ -42,45 +45,34 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
 
   void _sendMessage(BuildContext ctx) async {
     print(_enteredMessage);
-    // setState(() {
-    //   _isSending = true;
-    // });
-    // try {
-    //   await Firestore.instance
-    //       .collection('users')
-    //       .document(authProvider.getUid)
-    //       .collection('memos')
-    //       .document(_videoMetaData.memo.videoId)
-    //       .setData({
-    //     'categoryId': _selectedCategoryId,
-    //     'createdAt': _videoMetaData.memo.createdAt,
-    //     'text': _enteredMessage,
-    //     'time': _videoMetaData.memo.time ?? metaData.duration.inSeconds ?? 0,
-    //     'title': _videoMetaData.memo.title ?? metaData.title ?? '',
-    //     'videoId': _videoMetaData.memo.videoId,
-    //   });
-    //   Scaffold.of(ctx).showSnackBar(
-    //     SnackBar(
-    //       content: Text('メモを保存しました'),
-    //     ),
-    //   );
-    //   final memosProvider = Provider.of<MemosProvider>(context, listen: false);
-    //   int monthDataListsize = memosProvider.getMonthDataListCount;
-    //   if (monthDataListsize != 0) {
-    //     memosProvider.getTargetMonthData(monthDataListsize - 1).isFirst = true;
-    //   }
-    // } catch (e) {
-    //   print(e);
-    //   Scaffold.of(ctx).showSnackBar(
-    //     SnackBar(
-    //       content: Text('メモの保存に失敗しました'),
-    //     ),
-    //   );
-    // }
-    // if (_isSending == null) return;
-    // setState(() {
-    //   _isSending = false;
-    // });
+    setState(() {
+      _isSending = true;
+    });
+    try {
+      await FirebaseFirestore.instance.collection('memos').doc().set({
+        'uid': ctx.read<AuthProvider>().getUser.uid,
+        'categoryId': _selectedCategoryId,
+        'text': _enteredMessage,
+        'createdAt': DateTime.now(),
+      });
+
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('メモを保存しました'),
+        ),
+      );
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('メモの保存に失敗しました'),
+        ),
+      );
+    }
+    if (_isSending == null) return;
+    setState(() {
+      _isSending = false;
+    });
   }
 
   @override

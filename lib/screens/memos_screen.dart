@@ -1,4 +1,4 @@
-import 'package:catememo/screen/login_screen.dart';
+import 'package:catememo/screens/login_screen.dart';
 import 'package:catememo/widgets/Accordion.dart';
 import 'package:catememo/widgets/AppBottomNavigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
