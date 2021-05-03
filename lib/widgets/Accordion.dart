@@ -74,7 +74,7 @@ class _AccordionState extends State<Accordion> {
                   data: widget.memo,
                 ),
                 trailing: Icon(Icons.delete),
-                onTap: () {},
+                onTap: widget.removeFn,
               ),
             ),
             isExpanded: _isExpanded,

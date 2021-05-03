@@ -1,3 +1,4 @@
+import 'package:catememo/models/Memo.dart';
 import 'package:catememo/providers/memo_provider.dart';
 import 'package:catememo/widgets/Indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,34 +42,61 @@ class MemosScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: FutureBuilder<QuerySnapshot>(
-          future: context.read<MemoProvider>().fetchMemo(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Indicator();
-            }
+      body: FutureBuilder<void>(
+        future: context.read<MemoProvider>().fetchMemo(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Indicator();
+          }
 
-            if (snapshot.hasData) {
-              final count = snapshot.data.docs.length;
-              if (count > 0) {
-                return ListView.builder(
-                  itemCount: count,
-                  itemBuilder: (context, index) {
-                    final data = snapshot.data.docs[index].data();
-                    return Accordion(
-                      title: data["title"],
-                      memo: data["memo"],
-                      icon: Icons.ac_unit,
-                      iconColor: Colors.white,
-                    );
-                  },
+          return Selector<MemoProvider, List<Memo>>(
+            selector: (_, model) => model.getMemos,
+            builder: (ctx, memos, __) {
+              print(memos);
+              if (memos.length == 0) {
+                return Center(
+                  child: Text("メモがありません。"),
                 );
               }
-            }
-            return Center(
-              child: Text("メモがありません。"),
-            );
-          }),
+
+              return ListView.builder(
+                itemCount: memos.length,
+                itemBuilder: (_, index) {
+                  return Accordion(
+                    title: memos[index].title,
+                    memo: memos[index].memo,
+                    icon: Icons.ac_unit,
+                    iconColor: Colors.white,
+                    removeFn: () async {
+                      try {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        await FirebaseFirestore.instance
+                            .collection("memos")
+                            .doc(memos[index].id)
+                            .delete();
+
+                        ctx.read<MemoProvider>().removeAt(index);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("削除しました"),
+                          ),
+                        );
+                      } catch (e) {
+                        print(e);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("削除に失敗しました"),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
       bottomNavigationBar: AppBottomNavigationBar(0),
     );
   }

@@ -50,6 +50,7 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
       _isSending = true;
     });
     try {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       await FirebaseFirestore.instance.collection('memos').doc().set({
         'uid': ctx.read<AuthProvider>().getUser.uid,
         'categoryId': _selectedCategoryId,
