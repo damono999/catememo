@@ -6,11 +6,12 @@ class MemoProvider with ChangeNotifier {
   List<Memo> _memos = [];
 
   List<Memo> get getMemos {
-    return _memos;
+    return [..._memos];
   }
 
   void setMemos(List<Memo> memos) {
     _memos = memos;
+    notifyListeners();
   }
 
   Future<void> fetchMemo() async {
@@ -23,14 +24,17 @@ class MemoProvider with ChangeNotifier {
       memos.add(Memo.create(doc));
     });
     setMemos(memos);
-    notifyListeners();
   }
 
   void removeAt(int index) {
     final clone = [..._memos];
     clone.removeAt(index);
-    _memos = clone;
-    notifyListeners();
+    setMemos(clone);
+  }
+
+  void updateMemo(Memo memo) {
+    final clone = _memos.map((e) => e.id == memo.id ? memo : e).toList();
+    setMemos(clone);
   }
 
   void clear() {
