@@ -1,5 +1,6 @@
 import 'package:catememo/models/Memo.dart';
 import 'package:catememo/providers/memo_provider.dart';
+import 'package:catememo/screens/edit_memo_screen.dart';
 import 'package:catememo/widgets/Indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,6 +68,15 @@ class MemosScreen extends StatelessWidget {
                     memo: memos[index].memo,
                     icon: Icons.ac_unit,
                     iconColor: Colors.white,
+                    editFn: () async {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => EditMemoScreen(
+                            memo: memos[index],
+                          ),
+                        ),
+                      );
+                    },
                     removeFn: () async {
                       try {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -100,25 +110,4 @@ class MemosScreen extends StatelessWidget {
       bottomNavigationBar: AppBottomNavigationBar(0),
     );
   }
-}
-
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.isExpanded = false,
-  });
-
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
-}
-
-List<Item> generateItems(int numberOfItems) {
-  return List.generate(numberOfItems, (int index) {
-    return Item(
-      headerValue: 'Panel $index',
-      expandedValue: 'This is item number $index',
-    );
-  });
 }

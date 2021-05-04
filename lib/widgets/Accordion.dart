@@ -6,7 +6,7 @@ class Accordion extends StatefulWidget {
   final IconData icon;
   final Color iconColor;
   final String memo;
-  final Function fn;
+  final Function editFn;
   final Function removeFn;
 
   Accordion({
@@ -14,7 +14,7 @@ class Accordion extends StatefulWidget {
     this.icon,
     this.iconColor,
     this.memo,
-    this.fn,
+    this.editFn,
     this.removeFn,
   });
 
@@ -68,13 +68,53 @@ class _AccordionState extends State<Accordion> {
               );
             },
             body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                subtitle: MarkdownBody(
-                  data: widget.memo,
-                ),
-                trailing: Icon(Icons.delete),
-                onTap: widget.removeFn,
+              padding: const EdgeInsets.only(left: 24, right: 24, bottom: 8),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: MarkdownBody(
+                      data: widget.memo,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.grey,
+                            size: 32,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        splashColor: Colors.lightGreen,
+                        onTap: widget.editFn,
+                      ),
+                      SizedBox(
+                        width: 24,
+                      ),
+                      InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.grey,
+                            size: 32,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        splashColor: Colors.red,
+                        onTap: widget.removeFn,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             isExpanded: _isExpanded,

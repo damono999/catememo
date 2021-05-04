@@ -6,6 +6,7 @@ class Memo {
   final String title;
   final String memo;
   final Timestamp createdAt;
+  final Timestamp updateAt;
 
   Memo({
     this.id,
@@ -13,6 +14,7 @@ class Memo {
     this.title,
     this.memo,
     this.createdAt,
+    this.updateAt,
   });
 
   factory Memo.create(QueryDocumentSnapshot doc) {
@@ -22,6 +24,7 @@ class Memo {
       title: doc.data()["title"],
       memo: doc.data()["memo"],
       createdAt: doc.data()["createdAt"],
+      updateAt: doc.data()["updatedAt"],
     );
   }
 }
