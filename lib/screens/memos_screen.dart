@@ -66,8 +66,7 @@ class MemosScreen extends StatelessWidget {
                   return Accordion(
                     title: memos[index].title,
                     memo: memos[index].memo,
-                    icon: Icons.ac_unit,
-                    iconColor: Colors.white,
+                    colorId: memos[index].colorId,
                     createdAt: memos[index].createdAt,
                     editFn: () async {
                       Navigator.of(context).push(
