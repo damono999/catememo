@@ -68,6 +68,7 @@ class MemosScreen extends StatelessWidget {
                     memo: memos[index].memo,
                     icon: Icons.ac_unit,
                     iconColor: Colors.white,
+                    createdAt: memos[index].createdAt,
                     editFn: () async {
                       Navigator.of(context).push(
                         MaterialPageRoute(

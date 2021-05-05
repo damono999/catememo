@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:intl/intl.dart';
 
 class Accordion extends StatefulWidget {
   final String title;
   final IconData icon;
   final Color iconColor;
   final String memo;
+  final Timestamp createdAt;
   final Function editFn;
   final Function removeFn;
 
@@ -14,6 +17,7 @@ class Accordion extends StatefulWidget {
     this.icon,
     this.iconColor,
     this.memo,
+    this.createdAt,
     this.editFn,
     this.removeFn,
   });
@@ -83,6 +87,13 @@ class _AccordionState extends State<Accordion> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      Expanded(
+                        child: Text(
+                          DateFormat('yyyy-MM-dd')
+                              .format(widget.createdAt.toDate())
+                              .toString(),
+                        ),
+                      ),
                       InkWell(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
