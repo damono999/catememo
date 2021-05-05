@@ -5,6 +5,7 @@ class Memo {
   final String uid;
   final String title;
   final String memo;
+  final int colorId;
   final Timestamp createdAt;
   final Timestamp updateAt;
 
@@ -13,6 +14,7 @@ class Memo {
     this.uid,
     this.title,
     this.memo,
+    this.colorId,
     this.createdAt,
     this.updateAt,
   });
@@ -23,6 +25,7 @@ class Memo {
       uid: doc.data()["uid"],
       title: doc.data()["title"],
       memo: doc.data()["memo"],
+      colorId: doc.data()["colorId"],
       createdAt: doc.data()["createdAt"],
       updateAt: doc.data()["updatedAt"],
     );

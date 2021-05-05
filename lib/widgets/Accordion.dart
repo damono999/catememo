@@ -1,3 +1,4 @@
+import 'package:catememo/enums/color_enum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -5,8 +6,7 @@ import 'package:intl/intl.dart';
 
 class Accordion extends StatefulWidget {
   final String title;
-  final IconData icon;
-  final Color iconColor;
+  final int colorId;
   final String memo;
   final Timestamp createdAt;
   final Function editFn;
@@ -14,8 +14,7 @@ class Accordion extends StatefulWidget {
 
   Accordion({
     this.title,
-    this.icon,
-    this.iconColor,
+    this.colorId,
     this.memo,
     this.createdAt,
     this.editFn,
@@ -53,10 +52,9 @@ class _AccordionState extends State<Accordion> {
             headerBuilder: (BuildContext context, bool isExpanded) {
               return ListTile(
                 leading: CircleAvatar(
-                  child: Icon(
-                    widget.icon,
-                    color: widget.iconColor,
-                  ),
+                  backgroundColor:
+                      ColorEnumList.getTargetCategory(widget.colorId).color,
+                  maxRadius: 16,
                 ),
                 title: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -1,4 +1,4 @@
-import 'package:catememo/enums/category_enum.dart';
+import 'package:catememo/enums/color_enum.dart';
 import 'package:catememo/providers/auth_provider.dart';
 import 'package:catememo/screens/login_screen.dart';
 import 'package:catememo/widgets/appBottomNavigation.dart';
@@ -22,7 +22,7 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
   TextEditingController _titleController;
   String _memo = "";
   String _title = "";
-  int _selectedCategoryId;
+  int _selectedColorId;
   var _isPreview = false;
   var _isSending = false;
   var _isFirstCall = true;
@@ -40,6 +40,7 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
         _memoController = new TextEditingController(text: _memo);
         _titleController = new TextEditingController(text: _title);
         _isFirstCall = false;
+        _selectedColorId = 99;
       });
     }
   }
@@ -53,7 +54,7 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
       final now = DateTime.now();
       await FirebaseFirestore.instance.collection('memos').doc().set({
         'uid': ctx.read<AuthProvider>().getUser.uid,
-        'categoryId': _selectedCategoryId,
+        'colorId': _selectedColorId,
         'memo': _memo,
         'title': _title,
         'createdAt': now,
@@ -130,27 +131,21 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: DropdownButton<int>(
-                      value: _selectedCategoryId,
+                      value: _selectedColorId,
                       dropdownColor: Colors.grey[50],
                       underline: Container(),
                       onChanged: (int value) {
                         setState(() {
-                          _selectedCategoryId = value;
+                          _selectedColorId = value;
                         });
                       },
                       selectedItemBuilder: (context) {
-                        return CategoryEnumList.getEnum
-                            .map((CategoryEnum caterogy) {
+                        return ColorEnumList.getEnum.map((ColorEnum color) {
                           return Row(
                             children: <Widget>[
                               CircleAvatar(
-                                backgroundColor: caterogy.color,
-                                child: Icon(
-                                  caterogy.icon,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                maxRadius: 16,
+                                backgroundColor: color.color,
+                                maxRadius: 13,
                               ),
                               SizedBox(
                                 width: 8,
@@ -160,7 +155,7 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 3,
                                 child: Text(
-                                  caterogy.name,
+                                  color.name,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w100,
                                     fontSize: 14,
@@ -171,15 +166,23 @@ class _CreateMemoScreenState extends State<CreateMemoScreen> {
                           );
                         }).toList();
                       },
-                      items:
-                          CategoryEnumList.getEnum.map((CategoryEnum caterogy) {
+                      items: ColorEnumList.getEnum.map((ColorEnum color) {
                         return DropdownMenuItem(
-                          value: caterogy.id,
-                          child: Text(
-                            caterogy.name,
-                            style: caterogy.id == _selectedCategoryId
-                                ? TextStyle(fontWeight: FontWeight.bold)
-                                : TextStyle(fontWeight: FontWeight.normal),
+                          value: color.id,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: color.color,
+                                maxRadius: 11,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                color.name,
+                                style: color.id == _selectedColorId
+                                    ? TextStyle(fontWeight: FontWeight.bold)
+                                    : TextStyle(fontWeight: FontWeight.normal),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),

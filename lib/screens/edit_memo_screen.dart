@@ -1,4 +1,4 @@
-import 'package:catememo/enums/category_enum.dart';
+import 'package:catememo/enums/color_enum.dart';
 import 'package:catememo/models/Memo.dart';
 import 'package:catememo/providers/memo_provider.dart';
 import 'package:catememo/widgets/textfileds.dart';
@@ -25,7 +25,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
   TextEditingController _titleController;
   String _memo = "";
   String _title = "";
-  int _selectedCategoryId;
+  int _selectedColorId;
   var _isPreview = false;
   var _isSending = false;
   var _isFirstCall = true;
@@ -39,6 +39,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
     super.initState();
     _title = widget.memo.title;
     _memo = widget.memo.memo;
+    _selectedColorId = widget.memo.colorId;
   }
 
   @override
@@ -68,7 +69,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
           .doc(widget.memo.id)
           .set({
         'uid': widget.memo.uid,
-        'categoryId': _selectedCategoryId,
+        'colorId': _selectedColorId,
         'memo': _memo,
         'title': _title,
         'createdAt': widget.memo.createdAt,
@@ -80,6 +81,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
             uid: widget.memo.uid,
             title: _title,
             memo: _memo,
+            colorId: _selectedColorId,
             createdAt: widget.memo.createdAt,
             updateAt: now,
           ));
@@ -133,27 +135,21 @@ class EditMemoScreenState extends State<EditMemoScreen> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: DropdownButton<int>(
-                      value: _selectedCategoryId,
+                      value: _selectedColorId,
                       dropdownColor: Colors.grey[50],
                       underline: Container(),
                       onChanged: (int value) {
                         setState(() {
-                          _selectedCategoryId = value;
+                          _selectedColorId = value;
                         });
                       },
                       selectedItemBuilder: (context) {
-                        return CategoryEnumList.getEnum
-                            .map((CategoryEnum caterogy) {
+                        return ColorEnumList.getEnum.map((ColorEnum color) {
                           return Row(
                             children: <Widget>[
                               CircleAvatar(
-                                backgroundColor: caterogy.color,
-                                child: Icon(
-                                  caterogy.icon,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                maxRadius: 16,
+                                backgroundColor: color.color,
+                                maxRadius: 13,
                               ),
                               SizedBox(
                                 width: 8,
@@ -163,7 +159,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 3,
                                 child: Text(
-                                  caterogy.name,
+                                  color.name,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w100,
                                     fontSize: 14,
@@ -174,15 +170,23 @@ class EditMemoScreenState extends State<EditMemoScreen> {
                           );
                         }).toList();
                       },
-                      items:
-                          CategoryEnumList.getEnum.map((CategoryEnum caterogy) {
+                      items: ColorEnumList.getEnum.map((ColorEnum color) {
                         return DropdownMenuItem(
-                          value: caterogy.id,
-                          child: Text(
-                            caterogy.name,
-                            style: caterogy.id == _selectedCategoryId
-                                ? TextStyle(fontWeight: FontWeight.bold)
-                                : TextStyle(fontWeight: FontWeight.normal),
+                          value: color.id,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: color.color,
+                                maxRadius: 11,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                color.name,
+                                style: color.id == _selectedColorId
+                                    ? TextStyle(fontWeight: FontWeight.bold)
+                                    : TextStyle(fontWeight: FontWeight.normal),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),
