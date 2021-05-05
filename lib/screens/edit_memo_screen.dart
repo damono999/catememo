@@ -81,6 +81,7 @@ class EditMemoScreenState extends State<EditMemoScreen> {
             uid: widget.memo.uid,
             title: _title,
             memo: _memo,
+            colorId: _selectedColorId,
             createdAt: widget.memo.createdAt,
             updateAt: now,
           ));
