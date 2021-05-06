@@ -17,8 +17,9 @@ class LoginScreen extends StatelessWidget {
         title: Text("カテメモ"),
       ),
       body: Center(
-        child: TextButton(
-          onPressed: () async {
+        child: GestureDetector(
+          child: Image.asset("assets/google_button.png"),
+          onTap: () async {
             GoogleSignInAccount signinAccount = await googleLogin.signIn();
             if (signinAccount == null) return;
             GoogleSignInAuthentication auth =
@@ -31,10 +32,6 @@ class LoginScreen extends StatelessWidget {
             await FirebaseAuth.instance.signInWithCredential(credential);
             Navigator.of(context).pushReplacementNamed(MemosScreen.routeName);
           },
-          child: Text(
-            'login',
-            style: TextStyle(fontSize: 50),
-          ),
         ),
       ),
     );
