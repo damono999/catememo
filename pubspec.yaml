@@ -19,6 +19,7 @@ dependencies:
   cloud_firestore: ^1.0.7
   provider: ^5.0.0
   intl: ^0.17.0
+  syncfusion_flutter_charts: ^19.1.59
 
 dev_dependencies:
   flutter_test:
