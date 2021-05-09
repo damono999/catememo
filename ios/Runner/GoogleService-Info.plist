@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>995580474736-jip8dbrt9baeep638t5a748lq48jk4q7.apps.googleusercontent.com</string>
+	<string>995580474736-c6g59bial8jl248kmhnd0ojsalf90htf.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.995580474736-jip8dbrt9baeep638t5a748lq48jk4q7</string>
+	<string>com.googleusercontent.apps.995580474736-c6g59bial8jl248kmhnd0ojsalf90htf</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>995580474736-3sk59jl0iem6apaup28lp80j01s7kiig.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.catememo</string>
+	<string>com.kt.catememo</string>
 	<key>PROJECT_ID</key>
 	<string>catememo-dc2be</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:995580474736:ios:8dff52ceff52c53c73cbb5</string>
+	<string>1:995580474736:ios:11e1a125ce52dac273cbb5</string>
 </dict>
 </plist>
