@@ -14,9 +14,10 @@ class MemoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchMemo() async {
+  Future<void> fetchMemo(String uid) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('memos')
+        .where('uid', isEqualTo: uid)
         .orderBy("createdAt", descending: true)
         .get();
     var memos = <Memo>[];
