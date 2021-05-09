@@ -1,4 +1,5 @@
 import 'package:catememo/models/Memo.dart';
+import 'package:catememo/providers/auth_provider.dart';
 import 'package:catememo/providers/memo_provider.dart';
 import 'package:catememo/screens/edit_memo_screen.dart';
 import 'package:catememo/widgets/Indicator.dart';
@@ -21,6 +22,7 @@ class MemosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uid = context.watch<AuthProvider>().getUser?.uid ?? "";
     return Scaffold(
       appBar: AppBar(
         title: Text("ホーム"),
@@ -44,7 +46,7 @@ class MemosScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<void>(
-        future: context.read<MemoProvider>().fetchMemo(),
+        future: context.read<MemoProvider>().fetchMemo(uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Indicator();
