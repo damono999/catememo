@@ -28,8 +28,8 @@ class ChartScreen extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             child: TextButton(
               onPressed: () async {
-                FirebaseAuth.instance.signOut();
                 await googleLogin.signOut();
+                await FirebaseAuth.instance.signOut();
                 Navigator.of(context)
                     .pushReplacementNamed(LoginScreen.routeName);
               },
