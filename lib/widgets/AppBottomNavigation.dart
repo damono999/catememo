@@ -1,3 +1,4 @@
+import 'package:catememo/screens/chart_sereen.dart';
 import 'package:flutter/material.dart';
 import 'package:catememo/screens/create_memo_screen.dart';
 import 'package:catememo/screens/memos_screen.dart';
@@ -22,10 +23,10 @@ class AppBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.edit),
           label: '作成',
         ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.insert_chart),
-        //   label: 'チャート',
-        // ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.insert_chart),
+          label: 'チャート',
+        ),
       ],
       onTap: (int index) {
         if (index == currentIndex) return;
@@ -36,7 +37,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           Navigator.of(context)
               .pushReplacementNamed(CreateMemoScreen.routeName);
         } else if (index == 2) {
-          // Navigator.of(context).pushReplacementNamed(MemoListScreen.routeName);
+          Navigator.of(context).pushReplacementNamed(ChartScreen.routeName);
         }
       },
     );
