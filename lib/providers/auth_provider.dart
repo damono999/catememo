@@ -10,6 +10,7 @@ class AuthProvider with ChangeNotifier {
 
   void setUser(User user) {
     _user = user;
+    notifyListeners();
   }
 
   void clear() {
