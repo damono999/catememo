@@ -22,7 +22,7 @@ class MemosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uid = context.watch<AuthProvider>().getUser?.uid ?? "";
+    final uid = context.read<AuthProvider>().getUser?.uid ?? "";
     return Scaffold(
       appBar: AppBar(
         title: Text("ホーム"),
