@@ -23,10 +23,10 @@ class AppBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.edit),
           label: '作成',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.insert_chart),
-          label: 'チャート',
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.insert_chart),
+        //   label: 'チャート',
+        // ),
       ],
       onTap: (int index) {
         if (index == currentIndex) return;
@@ -36,9 +36,10 @@ class AppBottomNavigationBar extends StatelessWidget {
         } else if (index == 1) {
           Navigator.of(context)
               .pushReplacementNamed(CreateMemoScreen.routeName);
-        } else if (index == 2) {
-          Navigator.of(context).pushReplacementNamed(ChartScreen.routeName);
         }
+        // else if (index == 2) {
+        //   Navigator.of(context).pushReplacementNamed(ChartScreen.routeName);
+        // }
       },
     );
   }

@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
           MemosScreen.routeName: (ctx) => MemosScreen(),
           CreateMemoScreen.routeName: (ctx) => CreateMemoScreen(),
           EditMemoScreen.routeName: (ctx) => EditMemoScreen(),
-          ChartScreen.routeName: (ctx) => ChartScreen(),
+          // ChartScreen.routeName: (ctx) => ChartScreen(),
         },
       ),
     );
