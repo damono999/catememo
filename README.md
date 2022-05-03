@@ -1,3 +1,6 @@
+## playstore url
+https://play.google.com/store/apps/details?id=com.kt.catememo
+
 ## description
 It's an app for taking notes.
 
