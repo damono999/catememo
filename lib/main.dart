@@ -1,6 +1,5 @@
 import 'package:catememo/providers/auth_provider.dart';
 import 'package:catememo/providers/memo_provider.dart';
-import 'package:catememo/screens/chart_sereen.dart';
 import 'package:catememo/screens/edit_memo_screen.dart';
 import 'package:catememo/screens/login_screen.dart';
 import 'package:catememo/screens/create_memo_screen.dart';

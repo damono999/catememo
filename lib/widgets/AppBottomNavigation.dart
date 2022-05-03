@@ -1,4 +1,3 @@
-import 'package:catememo/screens/chart_sereen.dart';
 import 'package:flutter/material.dart';
 import 'package:catememo/screens/create_memo_screen.dart';
 import 'package:catememo/screens/memos_screen.dart';
